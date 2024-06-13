@@ -9,7 +9,7 @@ module.exports = async (client) => {
         const applicationCommands = await getApplicationCommands(client, testServer);
 
         for (const localCommand of localCommands) {
-            const {name, description, options } = localCommand;
+            const {name, description, options, integration_types, contexts} = localCommand;
 
             const existingCommand = await applicationCommands.cache.find(
                 (cmd) => cmd.name === name
@@ -40,6 +40,8 @@ module.exports = async (client) => {
                     name,
                     description,
                     options,
+                    integration_types,
+                    contexts,
                 })
 
                 console.log(`👍 Registered command "${name}".`)
