@@ -19,7 +19,7 @@ module.exports = async (client) => {
 
         // console.log(commands);
 
-        console.log(botData.clientId);
+        // console.log(botData.clientId);
 
 		const rest = new REST().setToken(botData.token)
 		// Refresh commands:

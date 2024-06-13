@@ -4,8 +4,8 @@ module.exports = {
 	data:{
 		name: "ban",
 		description: "Bans a member!!!",
-		integration_types: [0,1],
-        contexts:[0,1,2],
+		integration_types: [0],
+        contexts:[0],
 		// devOnly: Boolean,
 		// testOnly: Boolean,
 		options: [
