@@ -1,0 +1,4 @@
+.env
+utils/deleteSlashCommands.js
+config.json
+node_modules
