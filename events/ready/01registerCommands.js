@@ -1,54 +1,45 @@
-const {testServer} = require('../../config.json');
-const areCommandsDifferent = require('../../utils/areCommandsDifferent');
-const getApplicationCommands = require('../../utils/getApplicationCommands');
-const getLocalCommands = require('../../utils/getLocalCommands')
+const { testServer } = require("../../config.json")
+const areCommandsDifferent = require("../../utils/areCommandsDifferent")
+const getApplicationCommands = require("../../utils/getApplicationCommands")
+const getLocalCommands = require("../../utils/getLocalCommands")
+const {botData} = require("../../index.js")
+const { REST, Routes } = require("discord.js")
 
 module.exports = async (client) => {
-    try {
-        const localCommands = getLocalCommands();
-        const applicationCommands = await getApplicationCommands(client, testServer);
+	try {
+		const localCommands = getLocalCommands()
+		// const applicationCommands = await getApplicationCommands(client, testServer)
 
-        for (const localCommand of localCommands) {
-            const {name, description, options, integration_types, contexts} = localCommand;
+		let commands = []
 
-            const existingCommand = await applicationCommands.cache.find(
-                (cmd) => cmd.name === name
-            )
+		for (const localCommand of localCommands) {
+            // console.log(localCommand.data);
+			commands.push(localCommand.data)
+		}
 
-            if (existingCommand) {
-                if (localCommand.deleted) {
-                    await applicationCommands.delete(existingCommand.id);
-                    console.log(`🗑️ Deleted command "${name}".`)
-                    continue;
-                }
+        // console.log(commands);
 
-                if (areCommandsDifferent(existingCommand, localCommand)) {
-                    await applicationCommands.edit(existingCommand.id, {
-                        description,
-                        options,
-                    });
+        console.log(botData.clientId);
 
-                    console.log(`♻️ Edited command "${name}".`)
-                } 
-            } else {
-                if (localCommand.deleted){
-                    console.log(`⏭️ Skipping registration command "${name}" as it's set to delete.`)
-                    continue;
-                }
+		const rest = new REST().setToken(botData.token)
+		// Refresh commands:
+		;(async () => {
+			try {
+				console.log(`Started refreshing application commands.`)
+				
+				const data = await rest.put(
+					Routes.applicationCommands(botData.clientId),
+					{ body: commands }
+				)
 
-                await applicationCommands.create({
-                    name,
-                    description,
-                    options,
-                    integration_types,
-                    contexts,
-                })
-
-                console.log(`👍 Registered command "${name}".`)
-            }
-        }
-
-    } catch (error) {
-        console.log(`There was an error ${error}`);
-    }
+				console.log(
+					`Successfully reloaded ${data.length} application (/) commands.`
+				)
+			} catch (error) {
+				console.error(error)
+			}
+		})()
+	} catch (error) {
+		console.error(`There was an error ${error.stack}`)
+	}
 }

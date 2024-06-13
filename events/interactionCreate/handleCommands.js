@@ -7,7 +7,7 @@ module.exports = async (client, interaction) => {
     const localCommand = getLocalCommands();
 
     try {
-        const commandObject = localCommand.find((cmd)=> cmd.name === interaction.commandName)
+        const commandObject = localCommand.find((cmd)=> cmd.data.name === interaction.commandName)
 
         if (!commandObject) return;
 
@@ -48,6 +48,6 @@ module.exports = async (client, interaction) => {
         await commandObject.callback(client, interaction)
 
     } catch (error) {
-        console.log(`There was an error running this command: ${error}.`);
+        console.error(`There was an error running this command: ${error}.`);
     }
 }

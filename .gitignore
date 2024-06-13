@@ -1,4 +1,4 @@
 .env
-utils/deleteSlashCommands.js
+deleteSlashCommands.js
 config.json
 node_modules
